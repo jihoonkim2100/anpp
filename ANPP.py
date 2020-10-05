@@ -23,7 +23,7 @@ This modules consists of four main part:
     - PART III: Predictive Modeling
     - PART IV: Statistical Analysis with BIG FIVE
 
-We are highly recommend to use the google colab using GPU.
+We highly recommend to use the google colab using GPU.
 
 Authors: Andreea Al-Afuni, JiHoon Kim, Angela Sofia Royo Romero, and Bati Yilmaz
 Last-modified : 4th October 2020
@@ -34,7 +34,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 import statsmodels.formula.api as smf
-from google.colab import drive                                                  
+#from google.colab import drive                                                 # Only for .ipynb in google colabratory                
 from keras.models import Model, Sequential
 from keras import models
 from keras import layers
@@ -58,17 +58,23 @@ sns.set(style="darkgrid", color_codes=True)
 np.random.seed(20201005)                                                        # To ensure the reproducibility of the programm
 ################################################################################ PART I: Group and Data Selection
                                                                                 # 1. Load the dataset: SENT_GROUP_INFO and SENT_RATING_DATA
-drive.mount('/gdrive', force_remount=True)                                      # Mount the files on the google drive to be used with google colab
+#drive.mount('/gdrive', force_remount=True)                                      # Mount the files on the google drive to be used with google colab
 
 sg_index = "B:E,AE:AI,CW:DJ,DM,FN"                                              # Select the necessary dataset based on the column indices
 
-s_grp_dir = '/gdrive/My Drive/SCAN_seminar_data/SENT_GROUP_INFO.xlsx'           # Load the dataset SENT_GROUP_INFO 
-s_group = pd.read_excel(s_grp_dir, usecols = sg_index)                          # Only loading columns B to E (Case, Text, Condition, Language)
+                                                                                # Only for .py setting
+s_group = pd.read_excel(r'...',                                                 # Type the absolute file directory: "r'file_directory'"
+                        usecols = sg_index) 
+s_rating = pd.read_excel(r'...')                                                # Type the absolute file directory: "r'file_directory'"
+
+                                                                                # Only for .ipynb in google colabratory
+#s_grp_dir = '/gdrive/My Drive/SCAN_seminar_data/SENT_GROUP_INFO.xlsx'          # Load the dataset SENT_GROUP_INFO 
+#s_group = pd.read_excel(s_grp_dir, usecols = sg_index)                         # Only loading columns B to E (Case, Text, Condition, Language)
                                                                                 #                      AE to AI (BFI scores)
                                                                                 #                      CW to DJ (Reading experience ratings)
                                                                                 #                      DM, FN (Attention check, Minus points for fast completion = DEG Time)
-s_rat_dir = '/gdrive/My Drive/SCAN_seminar_data/SENT_RATING_DATA.xlsx'          # Load the dataset: SENT_RATING_DATA (all columns)
-s_rating = pd.read_excel(s_rat_dir)
+#s_rat_dir = '/gdrive/My Drive/SCAN_seminar_data/SENT_RATING_DATA.xlsx'         # Load the dataset: SENT_RATING_DATA (all columns)
+#s_rating = pd.read_excel(s_rat_dir)
 ################################################################################# 2. Group the Data: Coherent ENG+GER, HARRY AND PIPPI
 
                                                                                 # SENT_GROUP_INFO.xlsx
