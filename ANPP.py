@@ -57,7 +57,7 @@ from xgboost.sklearn import XGBRegressor
 sns.set(style="darkgrid", color_codes=True)
 np.random.seed(20201005)                                                        # To ensure the reproducibility of the programm
 ################################################################################ PART I: Group and Data Selection
-                                                                                # 1. Loading the dataset: SENT_GROUP_INFO and SENT_RATING_DATA
+                                                                                # 1. Load the dataset: SENT_GROUP_INFO and SENT_RATING_DATA
 drive.mount('/gdrive', force_remount=True)                                      # Mount the files on the google drive to be used with google colab
 
 sg_index = "B:E,AE:AI,CW:DJ,DM,FN"                                              # Select the necessary dataset based on the column indices
@@ -69,7 +69,7 @@ s_group = pd.read_excel(s_grp_dir, usecols = sg_index)                          
                                                                                 #                      DM, FN (Attention check, Minus points for fast completion = DEG Time)
 s_rat_dir = '/gdrive/My Drive/SCAN_seminar_data/SENT_RATING_DATA.xlsx'          # Load the dataset: SENT_RATING_DATA (all columns)
 s_rating = pd.read_excel(s_rat_dir)
-################################################################################# 2. Exploratory Data Analysis: Coherent ENG+GER, HARRY AND PIPPI
+################################################################################# 2. Group the Data: Coherent ENG+GER, HARRY AND PIPPI
 
                                                                                 # SENT_GROUP_INFO.xlsx
 sg_harry = s_group['TEXT'] == 'HARRY'                                           # return true only for HARRY
@@ -103,7 +103,7 @@ ax.pie(sizes,labels=categories,autopct='%1.1f%%',startangle=255,
        colors=colors,wedgeprops=wedgeprops)
 plt.title('Dataset (N=97)')
 plt.show()
-################################################################################# 3. Data Cleaning (Exclude the "bad data") and visualisation
+################################################################################# 3. Data Selection (Exclude the "bad data") and visualisation
 sg_co = s_group[sg_coherent]
 sr_co = s_rating[sr_coherent]
                                                                                 ### Selecting the cases with "bad data"
@@ -161,7 +161,7 @@ ax.pie(sizes,labels=categories,autopct='%1.1f%%',startangle=105,                
        colors=colors,wedgeprops=wedgeprops)                                     # 
 plt.title('Selected Dataset (N=41)')                                            #
 plt.show()                                                                      #
-################################################################################# 4.Set the data with Condition: COHERENT only
+################################################################################# 4. Set the data with Condition: COHERENT only
                                                                                 # Loading data from SENT_RATING file for:
 ar_co_harry = a_rating[sr_harry & sr_coherent]                                  #   Text: HARRY; Condition: COHERENT
 ar_co_pippi = a_rating[sr_pippi & sr_coherent & sr_eng]                         #   Text: PIPPI; Condition: COHERENT; Language: ENG
@@ -170,7 +170,7 @@ ar_co_pippi = a_rating[sr_pippi & sr_coherent & sr_eng]                         
 ag_co_harry = a_group[sg_harry & sg_coherent]                                   #   Text: HARRY; Condition: COHERENT
 ag_co_pippi = a_group[sg_pippi & sg_coherent & sg_eng]                          #   Text: PIPPI; Condition: COHERENT; Language: ENG
 
-################################################################################# 5. drop out the NaN column from the data from SENT_GROUP_INFO file:
+################################################################################# 5. drop out the NaN column from the data from SENT_GROUP_INFO file
 gh = ag_co_harry                                                                # Text: HARRY; Condition: COHERENT
 gp = ag_co_pippi                                                                # Text: PIPPI; Condition: COHERENT; Language: ENG
                                                                                 # Charachter names: legend
@@ -423,7 +423,7 @@ pi_te_dataset = np.concatenate((pi_te_arousal, pi_te_valence), axis = 1)        
 def MAE(y_train, y_pred):                                                       # 8. Define Evaluation Score, Mean Absolute Error (MAE)
   return np.mean(np.abs((y_train - y_pred)))
 
-################################################################################# 9. Multiple Linear Regression for HARRY dataset (Text: Harry, Condition: COHERENT)
+################################################################################# 9. Multiple Linear Regression for HARRY dataset (TEXT: Harry, CONDITION: COHERENT)
 x_train = hr_tr_dataset.copy()
 x_test = hr_te_dataset.copy()
 y_train = hr_tr_immersion.copy()
@@ -448,7 +448,7 @@ for i, e in enumerate(y_pred0):
 
 print('MAE:',MAE(y_test, y_pred0))
 
-################################################################################# 10. k-Neighbors-Regresson for HARRY (Text: HARRY, Condition: COHERENT)
+################################################################################# 10. k-Neighbors-Regression for HARRY (TEXT: HARRY, CONDITION: COHERENT)
 x_train = hr_tr_dataset.copy()
 x_test = hr_te_dataset.copy()
 y_train = hr_tr_immersion.copy()
@@ -473,7 +473,7 @@ for i, e in enumerate(y_pred2):
 
 print('MAE:',MAE(y_test, y_pred2))
 
-################################################################################# 11. SVR, Support Vector Regressor for HARRY (Text: HARRY, Condition: COHERENT)
+################################################################################# 11. SVR, Support Vector Regressoion for HARRY (TEXT: HARRY, CONDITION: COHERENT)
 x_train = hr_tr_dataset.copy()
 x_test = hr_te_dataset.copy()
 y_train = hr_tr_immersion.copy()
@@ -498,7 +498,7 @@ for i, e in enumerate(y_pred4):
 
 print('MAE:',MAE(y_test, y_pred4))
 
-################################################################################# 12. XGB Regressor for HARRY (Text: HARRY, Condition: COHERENT)
+################################################################################# 12. XGB Regression for HARRY (TEXT: HARRY, CONDITION: COHERENT)
 x_train = hr_tr_dataset.copy()
 x_test = hr_te_dataset.copy()
 y_train = hr_tr_immersion.copy()
@@ -535,7 +535,7 @@ for i, e in enumerate(y_pred6):
 
 print('MAE',MAE(y_test, y_pred6))
 
-################################################################################# 13. NN, simple one for Text: HARRY, Condition: COHERENT (Text: HARRY, Condition: COHERENT)
+################################################################################# 13. NN Regression for HARRY (TEXT: HARRY, CONDITION: COHERENT)
 x_train = hr_tr_dataset.copy()                                                  # Characteristics: 5 layers
 x_test = hr_te_dataset.copy()                                                   # Layer 1: Input layer, size = x_train.shape[1] which is 250
 y_train = hr_tr_immersion.copy()                                                # Layer 2, 3, 4: size = 64
@@ -548,6 +548,7 @@ model.add(layers.Dense(64, activation='relu'))
 model.add(layers.Dense(64, activation='relu'))
 model.add(layers.Dense(1))
 model.compile(optimizer='rmsprop', loss='mse', metrics=['mae'])
+model.summary()
 
 history = model.fit(x_train, y_train,epochs = 100,batch_size=1, verbose=0)
 
@@ -564,7 +565,7 @@ result = model.predict(x_test, verbose=0)
 for i, e in enumerate(result):
     print("expected_value",sum(e,0.0)/len(e), '\t', "real_value", y_test[i])
 
-################################################################################# 14. Multiple Linear Regression for PIPPI (Text: PIPPI, Condition: COHERENT)
+################################################################################# 14. Multiple Linear Regression for PIPPI (TEXT: PIPPI, CONDITION: COHERENT)
 x_train = pi_tr_dataset.copy()
 x_test = pi_te_dataset.copy()
 y_train = pi_tr_immersion.copy()
@@ -589,7 +590,7 @@ for i, e in enumerate(y_pred8):
 
 print('MAE:',MAE(y_test, y_pred8))
 
-################################################################################# 15. k-Neighbors-Regresson for PIPPI (Text: PIPPI, Condition: COHERENT)
+################################################################################# 15. k-Neighbors-Regression for PIPPI (TEXT: PIPPI, CONDITION: COHERENT)
 
 x_train = pi_tr_dataset.copy()
 x_test = pi_te_dataset.copy()
@@ -615,7 +616,7 @@ for i, e in enumerate(y_pred10):
 
 print('MAE:',MAE(y_test, y_pred10))
 
-################################################################################# 16. SVR, Support Vector Regressor for PIPPI (Text: PIPPI, Condition: COHERENT)
+################################################################################# 16. SVR, Support Vector Regression for PIPPI (TEXT: PIPPI, CONDITION: COHERENT)
 x_train = pi_tr_dataset.copy()
 x_test = pi_te_dataset.copy()
 y_train = pi_tr_immersion.copy()
@@ -640,7 +641,7 @@ for i, e in enumerate(y_pred12):
 
 print('MAE:',MAE(y_test, y_pred12))
 
-################################################################################# 17. XGB Regressor for PIPPI (Text: PIPPI, Condition: COHERENT)
+################################################################################# 17. XGB Regression for PIPPI (TEXT: PIPPI, CONDITION: COHERENT)
 x_train = pi_tr_dataset.copy()
 x_test = pi_te_dataset.copy()
 y_train = pi_tr_immersion.copy()
@@ -673,7 +674,7 @@ for i, e in enumerate(y_pred14):
 
 print('MAE',MAE(y_test, y_pred14))
 
-################################################################################# 18. NN, simple one for PIPPI (Text: PIPPI, Condition: COHERENT)
+################################################################################# 18. NN Regression for PIPPI (TEXT: PIPPI, CONDITION: COHERENT)
 x_train = pi_tr_dataset.copy()                                                  # Characteristics of the neural network: see above (For Text: HARRY)
 x_test = pi_te_dataset.copy()
 y_train = pi_tr_immersion.copy()
@@ -738,7 +739,7 @@ for mean,stdev,param in zip(means,stds,params):
     print("%f (%f) with: %r" % (mean,stdev,param))
 print("Best: %f using %s" % (grid_result.best_score_,grid_result.best_params_))
 
-################################################################################# 20. Nueral network, Regression: Evaluation
+################################################################################# 20. Nueral network, Regression: Cross-Validation
 para = grid_result.best_params_                                                 # Cross Validation for Text: HARRY, Condition: COHERENT
 append = []
 a_list = ['neurons1','neurons2','neurons3']
@@ -789,7 +790,7 @@ plt.xlabel('Epochs')
 plt.ylabel('Average Validation MAE')
 plt.show()
 
-################################################################################# 21. Neural network, Regression
+################################################################################# 21. Neural network, Regression: Evaluation
 para = grid_result.best_params_                                                 # Final train and test of Text: HARRY, Condition: COHERENT
 append = []
 alist = ['neurons1','neurons2','neurons3']
@@ -805,6 +806,7 @@ model.add(layers.Dense(append[1], activation='relu'))
 model.add(layers.Dense(append[2], activation='relu'))
 model.add(layers.Dense(1))
 model.compile(optimizer='rmsprop', loss='mse', metrics=['mae'])
+model.summary()
 
 history = model.fit(x_train,y_train,epochs=115,batch_size=20,verbose=0)
 
@@ -822,7 +824,7 @@ for i, e in enumerate(result):
     print("expected_value",sum(e,0.0)/len(e), '\t', "real_value", y_test[i])
 
 ################################################################################ PART IV: Statistical Analysis with BIG FIVE
-################################################################################# 22.Statistical Analysises between Immersion and 5 BFI: Artihmetic Mean
+################################################################################# 22. Statistical Analysises between Immersion and 5 BFI (TEXT: HARRY; PIPPI)
                                                                                 # Using linear regression, ordinary least square
 e_group = a_group.copy()                                                        # Text: HARRY; PIPPI, Condition: COHERENT, Immersion: 2 Reader_Response
 e_group.head()
@@ -893,7 +895,7 @@ plt.axhline(-2, c="g", ls="--")
 plt.title("")
 plt.show()
 
-################################################################################# 23.Statistical Analysises between Immersion and 5 BFI: Artihmetic Mean
+################################################################################# 23. Statistical Analysises between Immersion and 5 BFI (TEXT: HARRY)
                                                                                 # Using linear regression, ordinary least square
 e_group = h_group.copy()                                                        # Text: HARRY, Condition: COHERENT, Immersion: 2 Reader_Response
 e_group.head()
@@ -928,7 +930,7 @@ immersion_bfi_sa(bfi_list)                                                      
 immersion_bfi_pl(bfi_list)                                                      # Plot the IMMERSION and BFI in linear regression
 immersion_bfi_pl2(bfi_list)                                                     # Plot the IMMERSION and BFI in nonlinear regression
 
-################################################################################# 24.Statistical Analysises between Immersion and 5 BFI: Artihmetic Mean
+################################################################################# 24. Statistical Analysises between Immersion and 5 BFI (TEXT: PIPPI)
                                                                                 # Using linear regression, ordinary least square
 e_group = p_group.copy()                                                        # Text: PIPPI, Condition: COHERENT, Immersion: 3 Reader_Response
 e_group.head()
@@ -942,7 +944,7 @@ immersion_bfi_pl(bfi_list)                                                      
 immersion_bfi_pl2(bfi_list)                                                     # Plot the IMMERSION and BFI in nonlinear regression
 
 ################################################################################# Statistical Analysises between Immersion and 5 BFI: Artihmetic Mean
-                                                                                # 25. Immersion: All Reader_response
+                                                                                # 25. Immersion and BIG_FIVE: All Reader_response (CONDITION: COHERENT; SCRAMBLED)
 e_group = p_group.copy()                                                        # Text: HARRY; PIPPI, Condition: COHERENT; SCRAMBLED
 e_group.head()
 
@@ -1011,7 +1013,7 @@ plt.title("")
 plt.show()
 
 ################################################################################# Statistical Analysises between Immersion and 5 BFI: Artihmetic Mean
-                                                                                # 26. Immersion: All Reader_response
+                                                                                # 26. Immersion and BIG_FIVE: All Reader_response (CONDITION: COHERENT)
 sg_co = s_group[sg_coherent]                                                    # Text: HARRY; PIPPI, Condition: COHERENT
 sr_co = s_rating[sr_coherent]
                                                                                 ### Selecting the cases with "bad data"
@@ -1094,7 +1096,7 @@ plt.axhline(-2, c="g", ls="--")
 plt.title("")
 plt.show()
 
-################################################################################ Reader Response and BIG FIVE
+################################################################################# 27. Reader Response and BIG FIVE (TEXT: HARRY; PIPPI, CONDITION:SCRAMBLED)
 for reader in ['FOCUSING_OF_ATTENTION','TEXT_ABSORPTION','IMAGINABILITY',
                'SPATIAL_INVOLVEMENT','GENERAL_READING_ENJOYMENT',
                'IDENTIFICATION','EASE_OF_COGNITIVE_ACCESS']:
